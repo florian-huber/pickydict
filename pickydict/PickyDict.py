@@ -24,7 +24,7 @@ class PickyDict(UserDict):
                             replacements={"a": "abc", "b": "bcd", "c": "cde"})
         print(my_dict)  # => {'abc': 1, 'bcd': 2}
         my_dict["c"] = 100
-        print(my_dict)  # => {'abc': 1, 'bcd': 2, , 'cde': 100}
+        print(my_dict)  # => {'abc': 1, 'bcd': 2, 'cde': 100}
         my_dict["b"] = 5  # => ValueError: Key 'b' will be interpreted as 'bcd'...
 
     """
