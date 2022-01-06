@@ -42,7 +42,7 @@ jobs:
   basic_checks:
     name: Basic code checks / python-${{ matrix.python-version }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    needs: first_check
+    needs: thorough_check
     strategy:
       fail-fast: false
       matrix:
