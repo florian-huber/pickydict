@@ -1,0 +1,37 @@
+name: Pypi verify
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Test scenario tags'
+
+jobs:
+  verify:
+    name: Verify memo-ms package on ${{ matrix.os }} / python-3.8
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Python info
+        run: |
+          which python
+          python --version
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pickydict
+      - name: Show pip list
+        run: |
+          pip list
+     - name: Run tests
+      run: |
+        pip install pytest
+        pytest
