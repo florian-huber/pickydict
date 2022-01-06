@@ -1,3 +1,7 @@
+![GitHub](https://img.shields.io/github/license/florian-huber/pickydict)
+[![PyPI](https://img.shields.io/pypi/v/pickydict)](https://pypi.org/project/pickydict/)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/florian-huber/pickydict/CI%20Build)
+
 # pickydict - the more picky version of Python dictionary
 
 `PickyDict` objects will behave just like Python dictionaries, with a few
