@@ -1,8 +1,9 @@
-from collections import UserDict
+#from collections import UserDict
+import json
 import re
 
 
-class PickyDict(UserDict):
+class PickyDict(dict):
     """More picky version of Python dictionary.
 
     PickyDict objects will behave just like Python dictionaries, with a few
@@ -94,20 +95,21 @@ class PickyDict(UserDict):
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
         if input_dict is not None:
-            UserDict.__init__(self, input_dict)
+            super().__init__(input_dict)
+            self._apply_replacements()
         else:
-            UserDict.__init__(self)
+            super().__init__()
 
     def __setitem__(self, key, value):
         proper_key = self._harmonize_key(key)
         if key == proper_key:
-            self.data[key] = value
-        elif self.data.get(proper_key, None) is not None:
+            super().__setitem__(key, value)
+        elif self.get(proper_key, None) is not None:
             raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
                              "But this entry already exists. "
                              f"Please use '{proper_key}' if you want to replace the entry.")
         else:
-            self.data[proper_key] = value
+            super().__setitem__(proper_key, value)
 
     def set_pickyness(self, key_replacements: dict = None,
                       key_regex_replacements: dict = None,
@@ -147,17 +149,22 @@ class PickyDict(UserDict):
 
     def _apply_replacements(self):
         """Harmonizes all keys in dictionary."""
-        keys_initial = self.data.copy().keys()
+        keys_initial = self.copy().keys()
         for key in keys_initial:
             proper_key = self._harmonize_key(key)
-            if key != proper_key and self.data.get(proper_key, None) is not None:
+            if key != proper_key and self.get(proper_key, None) is not None:
                 raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
                                  "But this entry already exists. "
                                  f"Please use '{proper_key}' if you want to replace the entry.")
             if key != proper_key:
-                self.data[proper_key] = self.data[key]
-                self.data.pop(key)
+                value = self.get(key)
+                super().__setitem__(proper_key, value)
+                self.pop(key)
 
+    def to_json(self):
+        return json.dumps(self, default=lambda x: x.data, 
+            sort_keys=True, indent=4)
+    
     @property
     def force_lower_case(self):
         return self._force_lower_case.copy()

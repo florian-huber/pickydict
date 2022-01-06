@@ -1,3 +1,4 @@
+import json
 import pytest
 from pickydict import PickyDict
 
@@ -78,3 +79,18 @@ def test_pickydict_replacements_update():
     my_dict.key_regex_replacements = {r"\s": "_"}
     assert my_dict == {'first_name': 'Peter', 'surname': 'Petersson'}, \
         "Expected different dicionary"
+
+
+def test_pickydict_json_dumbs():
+    my_dict = PickyDict({"First Name": "Peter", "Last Name": "Petersson"},
+                        key_regex_replacements={r"\s": "_"})
+    encoded = json.dumps(my_dict, sort_keys=True)
+    expected_encoded = '{"first_name": "Peter", "last_name": "Petersson"}'
+    assert encoded == expected_encoded, "Expected differen json.dumbs result"
+
+
+def test_pickydict_to_json():
+    my_dict = PickyDict({"First Name": "Peter", "Last Name": "Petersson"})
+    my_json = my_dict.to_json()
+    expected_json = '{\n    "first name": "Peter",\n    "last name": "Petersson"\n}'
+    assert my_json == expected_json, "Expected differen json"
