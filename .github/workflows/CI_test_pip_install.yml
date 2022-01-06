@@ -8,7 +8,7 @@ on:
 
 jobs:
   verify:
-    name: Verify memo-ms package on ${{ matrix.os }} / python-3.8
+    name: Verify pickydict package on ${{ matrix.os }} / python-3.8
     strategy:
       fail-fast: false
       matrix:
@@ -31,7 +31,7 @@ jobs:
       - name: Show pip list
         run: |
           pip list
-     - name: Run tests
+      - name: Run tests
         run: |
           pip install pytest
           pytest
