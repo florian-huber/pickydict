@@ -32,6 +32,6 @@ jobs:
         run: |
           pip list
      - name: Run tests
-      run: |
-        pip install pytest
-        pytest
+        run: |
+          pip install pytest
+          pytest
