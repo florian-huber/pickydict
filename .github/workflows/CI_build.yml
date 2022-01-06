@@ -41,12 +41,13 @@ jobs:
 
   basic_checks:
     name: Basic code checks / python-${{ matrix.python-version }} / ${{ matrix.os }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    needs: first_check
     strategy:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        python-version: ["3.7, "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
         exclude:
           # already tested in first_check job
           - python-version: 3.8
