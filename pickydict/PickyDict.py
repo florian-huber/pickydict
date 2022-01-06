@@ -1,4 +1,5 @@
 from collections import UserDict
+import re
 
 
 class PickyDict(UserDict):
@@ -8,7 +9,7 @@ class PickyDict(UserDict):
     notable exceptions:
         (1) PickyDict has a force_lower_case attribute. If set to True (default)
         then dictionary keys will all be treated as lower-case.
-        (2) PickyDict can contain a second dictionary named "replacements" with
+        (2) PickyDict can contain a second dictionary named "key_replacements" with
         mappings to enforce translating specific key words.
 
     Examples:
@@ -29,59 +30,115 @@ class PickyDict(UserDict):
 
     """
     def __init__(self, input_dict: dict = None,
-                 replacements: dict = None,
+                 key_replacements: dict = None,
+                 key_regex_replacements: dict = None,
                  force_lower_case: bool = True):
         """
         Parameters
         ----------
         input_dict : dict, optional
-            This is the actual dictionary within PickyDict. 
-        replacements : dict, optional
-            This is second dictionary within PickyDict containing mappings of all
+            This is the actual dictionary within PickyDict.
+        key_replacements : dict, optional
+            This additional dictionary within PickyDict contains mappings of all
             keys which the user wants to force into a specific form (see code example).
+        key_regex_replacements : dict, optional
+            This additional dictionary contains pairs of regex (regular expression) strings
+            and replacement strings to clean and harmonize the main dictionary keys.
+            An example would be {r"\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
         """
         self._force_lower_case = force_lower_case
-        self._replacements = replacements
+        self._key_replacements = key_replacements
+        self._key_regex_replacements = key_regex_replacements
         if input_dict is not None:
             UserDict.__init__(self, input_dict)
         else:
             UserDict.__init__(self)
 
     def __setitem__(self, key, value):
+        proper_key = self._harmonize_key(key)
+        if key == proper_key:
+            self.data[key] = value
+        elif self.data.get(proper_key, None) is not None:
+            raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
+                             "But this entry already exists. "
+                             f"Please use '{proper_key}' if you want to replace the entry.")
+        else:
+            self.data[proper_key] = value
+
+    def set_pickyness(self, key_replacements: dict = None,
+                      key_regex_replacements: dict = None,
+                      force_lower_case: bool = True):
+        """
+        Function to set the pickyness of the dictionary.
+        Will automatically also run the new replacements if the dictionary already exists.
+
+        Parameters
+        ----------
+        key_replacements : dict, optional
+            This is second dictionary within PickyDict containing mappings of all
+            keys which the user wants to force into a specific form (see code example).
+        key_regex_replacements : dict, optional
+            This additional dictionary contains pairs of regex (regular expression) strings
+            and replacement strings to clean and harmonize the main dictionary keys.
+            An example would be {r"\s": "_"} which will replace all spaces with underscores.
+        force_lower_case : bool, optional
+            If set to True (default) all dictionary keys will be forced to be lower case.
+        """
+        self._force_lower_case = force_lower_case
+        self._key_replacements = key_replacements
+        self._key_regex_replacements = key_regex_replacements
+        self._apply_replacements()
+        
+
+    def _harmonize_key(self, key):
+        """Applies lower-case, then regex replacements, then key replacements."""
         if self._force_lower_case:
             key = key.lower()
-        if self._replacements is not None and key in self._replacements:
-            proper_key = self._replacements[key]
-            if self.data.get(proper_key, None) is not None:
+        if self._key_regex_replacements is not None:
+            for regex_pattern, target in self._key_regex_replacements.items():
+                key = re.sub(regex_pattern, target, key)
+        if self._key_replacements is not None and key in self._key_replacements:
+            key = self._key_replacements[key]
+        return key
+
+    def _apply_replacements(self):
+        """Harmonizes all keys in dictionary."""
+        keys_initial = self.data.copy().keys()
+        for key in keys_initial:
+            proper_key = self._harmonize_key(key)
+            if key != proper_key and self.data.get(proper_key, None) is not None:
                 raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
                                  "But this entry already exists. "
                                  f"Please use '{proper_key}' if you want to replace the entry.")
-            self.data[proper_key] = value
-        else:
-            self.data[key] = value
-
-    def set_pickyness(self, replacements: dict, force_lower_case: bool):
-        self._force_lower_case = force_lower_case
-        self._replacements = replacements
-
-    def _apply_replacements(self):
-        for key, value in self.data.items():
-            if self._replacements is not None and key in self._replacements:
-                proper_key = self._replacements[key]
-                if self.data.get(proper_key, None) is not None:
-                    raise ValueError("Conflicting entries found. "
-                                     f"Key '{key}' will now be interpreted as '{proper_key}'. "
-                                     "But the dictionary already contains a value for this key.")
-                else:
-                    self.data[proper_key] = value
-                    self.data.pop(key)
+            if key != proper_key:
+                self.data[proper_key] = self.data[key]
+                self.data.pop(key)
 
     @property
-    def replacements(self):
-        return self._replacements.copy()
+    def force_lower_case(self):
+        return self._force_lower_case.copy()
 
-    @replacements.setter
-    def replacements(self, new_replacements):
-        self._replacements = new_replacements
+    @force_lower_case.setter
+    def force_lower_case(self, new_force_lower_case):
+        self._force_lower_case = new_force_lower_case
+        self._apply_replacements()
+
+    @property
+    def key_replacements(self):
+        return self._key_replacements.copy()
+
+    @key_replacements.setter
+    def key_replacements(self, new_key_replacements):
+        self._key_replacements = new_key_replacements
+        self._apply_replacements()
+
+    @property
+    def key_regex_replacements(self):
+        return self._key_regex_replacements.copy()
+
+    @key_regex_replacements.setter
+    def key_regex_replacements(self, new_key_regex_replacements):
+        self._key_regex_replacements = new_key_regex_replacements
+        self._apply_replacements()
