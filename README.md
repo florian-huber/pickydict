@@ -33,7 +33,7 @@ my_dict["b"] = 5  # => ValueError: Key 'b' will be interpreted as 'bcd'...
 ```
 
 It is also possible to add a dictionary with regex expression to replace parts of
-key strings. This is done using the key_regex_replacements attribute.
+key strings. This is done using the `key_regex_replacements` attribute.
 
 Example:
 
@@ -46,8 +46,8 @@ my_dict = PickyDict({"First Name": "Peter", "Last Name": "Petersson"},
 print(my_dict)  # => {'first_name': 'Peter', 'surname': 'Petersson'}
 ```
 
-Whenever the pickyness is updated, no matter if the force_lower_case, key_replacements,
-or key_regex_replacements, the entire dictionary will be updated accoringly.
+Whenever the pickyness is updated, no matter if the `force_lower_case`, `key_replacements`,
+or `key_regex_replacements`, the entire dictionary will be updated accoringly.
 
 Example:
 
