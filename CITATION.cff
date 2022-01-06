@@ -1,0 +1,17 @@
+# YAML 1.2
+---
+abstract: "pickydict - the more picky version of Python dictionary"
+authors:
+  -
+    affiliation: "HSD - University of Applied Sciences, Düsseldorf, Germany"
+    family-names: Huber
+    given-names: Florian
+    orcid: "https://orcid.org/0000-0002-3535-9406"
+
+cff-version: "1.1.0"
+keywords:
+  - Python dictionary
+license: "MIT"
+repository-code: "https://github.com/florian-huber/pickydict"
+title: pickydict
+...
