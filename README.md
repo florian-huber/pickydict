@@ -62,3 +62,6 @@ my_dict.set_pickyness(key_replacements={"last_name": "surname"},
                       key_regex_replacements={r"\\s": "_"})
 print(my_dict)  # => {'first_name': 'Peter', 'surname': 'Petersson'}
 ```
+
+## For the rest it's just a `dict`
+All other operation should work as you are used to from Python dictionaries.
