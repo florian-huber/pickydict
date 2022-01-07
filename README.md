@@ -37,7 +37,7 @@ my_dict["b"] = 5  # => ValueError: Key 'b' will be interpreted as 'bcd'...
 ```
 
 It is also possible to add a dictionary with regex expression to replace parts of
-key strings. This is done using the `key_regex_replacements` attribute.
+key strings. This is done using the `key_regex_replacements` attribute. In the following example the dictionary will replace all spaces in keys with underscores.
 
 Example:
 
@@ -46,7 +46,7 @@ from pickydict import PickyDict
 
 my_dict = PickyDict({"First Name": "Peter", "Last Name": "Petersson"},
                     key_replacements={"last_name": "surname"},
-                    key_regex_replacements={r"\\s": "_"})
+                    key_regex_replacements={r"\s": "_"})
 print(my_dict)  # => {'first_name': 'Peter', 'surname': 'Petersson'}
 ```
 
@@ -63,7 +63,7 @@ my_dict = PickyDict({"First Name": "Peter", "Last Name": "Petersson"})
 print(my_dict)  # => {'first name': 'Peter', 'last name': 'Petersson'}
 
 my_dict.set_pickyness(key_replacements={"last_name": "surname"},
-                      key_regex_replacements={r"\\s": "_"})
+                      key_regex_replacements={r"\s": "_"})
 print(my_dict)  # => {'first_name': 'Peter', 'surname': 'Petersson'}
 ```
 
