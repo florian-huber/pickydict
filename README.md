@@ -13,6 +13,15 @@ If set to True (default) then dictionary keys will all be treated as lower-case.
 2. PickyDict can contain two additional dictionaries named `key_replacements`
     and `key_regex_replacements` with mappings to enforce translating specific key words.
 
+## Installation
+
+PickyDict can simply be installed with:
+```
+pip install pickydict
+```
+
+It has no further dependencies and should run fine with Python >= 3.6 (probably also lower versions, but that is not tested).
+
 ## Code examples
 
 ```python
