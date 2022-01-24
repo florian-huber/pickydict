@@ -39,6 +39,8 @@ my_dict["b"] = 5  # => ValueError: Key 'b' will be interpreted as 'bcd'...
 It is also possible to add a dictionary with regex expression to replace parts of
 key strings. This is done using the `key_regex_replacements` attribute. In the following example the dictionary will replace all spaces in keys with underscores.
 
+Important to note is that regex based replacements will be carried out **before** the more specific key_replacements. This is to reduce the number of possible variations and make things simpler for the user.
+
 Example:
 
 ```python
