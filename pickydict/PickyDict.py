@@ -98,7 +98,13 @@ class PickyDict(dict):
             super().__init__(input_dict)
             self._apply_replacements()
         else:
-            super().__init__()
+            super().__init__()     
+
+    def copy(self):
+        return PickyDict(self,
+                         self._key_replacements,
+                         self._key_regex_replacements,
+                         self._force_lower_case)
 
     def __setitem__(self, key, value):
         proper_key = self._harmonize_key(key)
@@ -149,8 +155,8 @@ class PickyDict(dict):
 
     def _apply_replacements(self):
         """Harmonizes all keys in dictionary."""
-        keys_initial = self.copy().keys()
-        for key in keys_initial:
+        keys_initial = self.keys()
+        for key in list(keys_initial).copy():
             proper_key = self._harmonize_key(key)
             if key != proper_key and self.get(proper_key, None) is not None:
                 raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
