@@ -42,6 +42,16 @@ def test_pickydict_w_key_and_regex_replacements():
         "Expected different dicionary"
 
 
+def test_pickydict_copy():
+    my_dict = PickyDict({"A": 1, "B": 2})
+    assert my_dict == {"a": 1, "b": 2}, "Expected different dictionary"
+
+    my_dict_copy = my_dict.copy()
+    my_dict_copy["C"] = 3
+    assert my_dict_copy.get("c") == 3, "Expected differnt key, value pair"
+    assert my_dict.get("c") is None, "Original dictionary should not have changed"
+
+
 @pytest.mark.parametrize("set_key, set_value, get_key",
                          [("A", "test1", "abc"),
                           ("First Name", "testname", "first_name"),
