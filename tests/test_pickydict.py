@@ -52,6 +52,21 @@ def test_pickydict_copy():
     assert my_dict.get("c") is None, "Original dictionary should not have changed"
 
 
+@pytest.mark.parametrize("dict1, dict2, expected", [
+    [{"Something": "ABC"}, {"something": "ABC"}, True],
+    [{"abc": ["a", 5, 7.01]}, {"abc": ["a", 7.01, 5]}, False],
+    [{"abc": 3.7, "def": 4.2}, {"def": 4.2, "abc": 3.7}, True],
+    [{"a": 1, "b": 2}, {"b": 2, "a": 1}, True],
+    [{"abc": ["a", 5, [7, 1]]}, {"abc":  ["a", 5, [1, 7]]}, False]])
+def test_pickydict_equal(dict1, dict2, expected):
+    pickydict1 = PickyDict(dict1)
+    pickydict2 = PickyDict(dict2)
+    if expected is True:
+        assert pickydict1 == pickydict2, "Expected dicts to be equal"
+    else:
+        assert pickydict1 != pickydict2, "Expected dicts NOT to be equal"
+
+
 @pytest.mark.parametrize("set_key, set_value, get_key",
                          [("A", "test1", "abc"),
                           ("First Name", "testname", "first_name"),
