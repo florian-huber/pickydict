@@ -62,7 +62,7 @@ print(my_dict)  # => {'first_name': 'Peter', 'surname': 'Petersson'}
 ```
 
 Whenever the pickyness is updated, no matter if the `force_lower_case`, `key_replacements`,
-or `key_regex_replacements`, the entire dictionary will be updated accoringly.
+or `key_regex_replacements`, the entire dictionary will be updated accordingly.
 
 Example:
 
