@@ -72,6 +72,10 @@ class PickyDict(dict):
     For the rest, PickyDict objects can be used just like regular Python dictionaries!
 
     """
+    _force_lower_case = True
+    _key_replacements = None
+    _key_regex_replacements = None
+
     def __init__(self, input_dict: dict = None,
                  key_replacements: dict = None,
                  key_regex_replacements: dict = None,
@@ -144,7 +148,7 @@ class PickyDict(dict):
 
     def _harmonize_key(self, key):
         """Applies lower-case, then regex replacements, then key replacements."""
-        if self._force_lower_case:
+        if self._force_lower_case is True:
             key = key.lower()
         if self._key_regex_replacements is not None:
             for regex_pattern, target in self._key_regex_replacements.items():
