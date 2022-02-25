@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- ensure that PickyDict object can be pickled [#9](https://github.com/florian-huber/pickydict/pull/9)
+
 ## [0.3.0] - 2022-02-09
 
 ### Added
