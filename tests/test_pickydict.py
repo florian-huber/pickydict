@@ -1,4 +1,6 @@
 import json
+import os
+import pickle
 import pytest
 from pickydict import PickyDict
 
@@ -119,3 +121,16 @@ def test_pickydict_to_json():
     my_json = my_dict.to_json()
     expected_json = '{\n    "first name": "Peter",\n    "last name": "Petersson"\n}'
     assert my_json == expected_json, "Expected differen json"
+
+
+def test_pickydict_pickling(tmp_path):
+    my_dict = PickyDict({"First Name": "Peter", "Last Name": "Petersson"})
+    # Pickling
+    file = open(os.path.join(tmp_path, "test.pickle"), "wb")
+    pickle.dump(my_dict, file)
+    file.close()
+    # Un-pickling
+    file = open(os.path.join(tmp_path, "test.pickle"), "rb")
+    my_dict_unpickled = pickle.load(file)
+    file.close()
+    assert my_dict == my_dict_unpickled, "Expected equal pickydicts"
