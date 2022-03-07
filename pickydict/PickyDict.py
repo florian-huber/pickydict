@@ -162,12 +162,12 @@ class PickyDict(dict):
         keys_initial = self.keys()
         for key in list(keys_initial).copy():
             proper_key = self._harmonize_key(key)
-            if key != proper_key and self.get(proper_key, None) is not None:
-                raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
-                                 "But this entry already exists. "
-                                 f"Please use '{proper_key}' if you want to replace the entry.")
             if key != proper_key:
                 value = self.get(key)
+                if self.get(proper_key) is not None and self.get(proper_key) != value:
+                    raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
+                                     "But this entry already exists. "
+                                     f"Please use '{proper_key}' if you want to replace the entry.")
                 super().__setitem__(proper_key, value)
                 self.pop(key)
 

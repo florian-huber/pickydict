@@ -36,6 +36,24 @@ def test_pickydict_w_key_regex_replacements():
         "Expected different dicionary"
 
 
+def test_init_pickydict_w_key_and_regex_replacements_double_entries():
+    # Test case with duplicate keys but same values
+    my_dict = PickyDict({"Name": "Peter", "First Name": "Peter"},
+                        key_replacements={"first_name": "name",
+                                          "my_name": "name"},
+                        key_regex_replacements={r"\s": "_"})
+    assert my_dict == {'name': 'Peter'}, \
+        "Expected different dicionary"
+
+    # Test case with duplicate keys but different values
+    with pytest.raises(ValueError) as msg:
+        _ = PickyDict({"Name": "Peter P.", "First Name": "Peter"},
+                      key_replacements={"first_name": "name",
+                                        "my_name": "name"},
+                      key_regex_replacements={r"\s": "_"})
+    assert "Key 'First Name' will be interpreted as 'name'." in str(msg.value)
+
+
 def test_pickydict_w_key_and_regex_replacements():
     my_dict = PickyDict({"First Name": "Peter", "Last Name": "Petersson"},
                         key_replacements={"last_name": "surname"},
