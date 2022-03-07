@@ -1,6 +1,9 @@
-#from collections import UserDict
+import logging
 import json
 import re
+
+
+logger = logging.getLogger('pickydict')
 
 
 class PickyDict(dict):
@@ -162,13 +165,15 @@ class PickyDict(dict):
         keys_initial = self.keys()
         for key in list(keys_initial).copy():
             proper_key = self._harmonize_key(key)
-            if key != proper_key and self.get(proper_key, None) is not None:
-                raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
-                                 "But this entry already exists. "
-                                 f"Please use '{proper_key}' if you want to replace the entry.")
             if key != proper_key:
                 value = self.get(key)
-                super().__setitem__(proper_key, value)
+                if self.get(proper_key) is None:
+                    super().__setitem__(proper_key, value)
+                elif self.get(proper_key) != value:
+                    msg = f"Key '{key}' will be interpreted as '{proper_key}'. " \
+                        "But this entry already exists. " \
+                        f"Please use '{proper_key}' if you want to replace the entry."
+                    logger.warning(msg)
                 self.pop(key)
 
     def to_json(self):
