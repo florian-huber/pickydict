@@ -79,5 +79,32 @@ my_dict.set_pickyness(key_replacements={"last_name": "surname"},
 print(my_dict)  # => {'first_name': 'Peter', 'surname': 'Petersson'}
 ```
 
+## Handling of key duplicates
+PickyDict converts key names as described above. This can obviously lead to cases of having key duplicates. This is handled in two different ways. When passing a dictionary to PickyDict in the beginning, only the entries for the desired keys will be kept.
+
+Example:
+
+```python
+
+from pickydict import PickyDict
+
+my_dict = PickyDict({"My Name": "Peter", "name": "Peter Petersson"},
+                      key_replacements={"my_name": "name"},
+                      key_regex_replacements={r"\s": "_"})
+print(my_dict)  # => {"name": "Peter Petersson"}
+```
+Later adding values using an improper key, however, will raise an exception when it leads to a duplicate.
+
+Example:
+
+```python
+
+from pickydict import PickyDict
+
+my_dict = PickyDict({"first_name": "Peter Petersson"},
+                      key_regex_replacements={r"\s": "_"})
+my_dict["First Name"] = Peter P. Petersson  # => ValueError:Key 'First name' will be interpreted as 'first_name'
+```
+
 ## For the rest it's just a `dict`
 All other operation should work as you are used to from Python dictionaries.
