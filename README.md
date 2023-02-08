@@ -1,7 +1,7 @@
 ![GitHub](https://img.shields.io/github/license/florian-huber/pickydict)
 [![PyPI](https://img.shields.io/pypi/v/pickydict?color=blue)](https://pypi.org/project/pickydict/)
 [![Conda (channel only)](https://img.shields.io/conda/vn/conda-forge/pickydict?color=blue)](https://github.com/conda-forge/pickydict-feedstock)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/florian-huber/pickydict/CI_Build)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/florian-huber/pickydict/CI_build.yml)
 
 # pickydict - the more picky version of Python dictionary
 
