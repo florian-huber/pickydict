@@ -115,18 +115,25 @@ class PickyDict(dict):
 
     def __setitem__(self, key, value):
         proper_key = self._harmonize_key(key)
-        if key == proper_key:
-            super().__setitem__(key, value)
-        elif self.get(proper_key, None) is not None:
+        if (key == proper_key) and (self.get(proper_key, None) is not None):
             raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
                              "But this entry already exists. "
                              f"Please use '{proper_key}' if you want to replace the entry.")
+
+        if self._allow_empty_values and (value == ""):
+            # overwriting a value with "" results in removal of the respective key
+            if key == proper_key:
+                self.pop(key)
+        elif key == proper_key:
+            super().__setitem__(key, value)
         else:
             super().__setitem__(proper_key, value)
 
     def set_pickyness(self, key_replacements: dict = None,
                       key_regex_replacements: dict = None,
-                      force_lower_case: bool = True):
+                      force_lower_case: bool = True,
+                      allow_empty_values: bool = False,
+                     ):
         """
         Function to set the pickyness of the dictionary.
         Will automatically also run the new replacements if the dictionary already exists.
@@ -142,8 +149,12 @@ class PickyDict(dict):
             An example would be {r"\\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
+        allow_empty_values : bool, optional
+            If set to False (default) the addition of empty entries ("") will be skipped 
+            (if key doesn't exist yet) or will lead to removal of the respective key.
         """
         self._force_lower_case = force_lower_case
+        self._allow_empty_values = allow_empty_values
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
         self._apply_replacements()
