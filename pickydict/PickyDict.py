@@ -76,13 +76,15 @@ class PickyDict(dict):
 
     """
     _force_lower_case = True
+    _allow_empty_values = False
     _key_replacements = None
     _key_regex_replacements = None
 
     def __init__(self, input_dict: dict = None,
                  key_replacements: dict = None,
                  key_regex_replacements: dict = None,
-                 force_lower_case: bool = True):
+                 force_lower_case: bool = True,
+                 allow_empty_values: bool = False):
         """
         Parameters
         ----------
@@ -97,6 +99,9 @@ class PickyDict(dict):
             An example would be {r"\\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
+        allow_empty_values : bool, optional
+            If set to False (default) the addition of empty entries ("") will be skipped 
+            (if key doesn't exist yet) or will lead to removal of the respective key.
         """
         self._force_lower_case = force_lower_case
         self._key_replacements = key_replacements
