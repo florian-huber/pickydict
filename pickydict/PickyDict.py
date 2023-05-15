@@ -123,7 +123,7 @@ class PickyDict(dict):
 
     def __setitem__(self, key, value):
         proper_key = self._harmonize_key(key)
-        if (key == proper_key) and (self.get(proper_key, None) is not None):
+        if (key != proper_key) and (self.get(proper_key, None) is not None):
             raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
                              "But this entry already exists. "
                              f"Please use '{proper_key}' if you want to replace the entry.")
