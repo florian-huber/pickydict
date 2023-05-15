@@ -76,13 +76,15 @@ class PickyDict(dict):
 
     """
     _force_lower_case = True
+    _remove_empty_values = True
     _key_replacements = None
     _key_regex_replacements = None
 
     def __init__(self, input_dict: dict = None,
                  key_replacements: dict = None,
                  key_regex_replacements: dict = None,
-                 force_lower_case: bool = True):
+                 force_lower_case: bool = True,
+                 remove_empty_values: bool = True):
         """
         Parameters
         ----------
@@ -97,8 +99,13 @@ class PickyDict(dict):
             An example would be {r"\\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
+        remove_empty_values : bool, optional
+            If set to True (default) the addition of empty entries ("") will be skipped 
+            (if key doesn't exist yet) or will lead to removal of the respective key.
         """
+        # pylint: disable=too-many-arguments
         self._force_lower_case = force_lower_case
+        self._remove_empty_values = remove_empty_values
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
         if input_dict is not None:
@@ -111,22 +118,31 @@ class PickyDict(dict):
         return PickyDict(self,
                          self._key_replacements,
                          self._key_regex_replacements,
-                         self._force_lower_case)
+                         self._force_lower_case,
+                         self._remove_empty_values
+                        )
 
     def __setitem__(self, key, value):
         proper_key = self._harmonize_key(key)
-        if key == proper_key:
-            super().__setitem__(key, value)
-        elif self.get(proper_key, None) is not None:
+        if (key != proper_key) and (self.get(proper_key, None) is not None):
             raise ValueError(f"Key '{key}' will be interpreted as '{proper_key}'. "
                              "But this entry already exists. "
                              f"Please use '{proper_key}' if you want to replace the entry.")
+
+        if self._remove_empty_values and (value == ""):
+            # overwriting a value with "" results in removal of the respective key
+            if key == proper_key:
+                self.pop(key)
+        elif key == proper_key:
+            super().__setitem__(key, value)
         else:
             super().__setitem__(proper_key, value)
 
     def set_pickyness(self, key_replacements: dict = None,
                       key_regex_replacements: dict = None,
-                      force_lower_case: bool = True):
+                      force_lower_case: bool = True,
+                      remove_empty_values: bool = False,
+                     ):
         """
         Function to set the pickyness of the dictionary.
         Will automatically also run the new replacements if the dictionary already exists.
@@ -142,8 +158,12 @@ class PickyDict(dict):
             An example would be {r"\\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
+        remove_empty_values : bool, optional
+            If set to True (default) the addition of empty entries ("") will be skipped 
+            (if key doesn't exist yet) or will lead to removal of the respective key.
         """
         self._force_lower_case = force_lower_case
+        self._remove_empty_values = remove_empty_values
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
         self._apply_replacements()
@@ -164,9 +184,13 @@ class PickyDict(dict):
         """Harmonizes all keys in dictionary."""
         keys_initial = self.keys()
         for key in list(keys_initial).copy():
+            value = self.get(key)
+            if self._remove_empty_values:
+                if value == "":
+                    self.pop(key)
+                    continue
             proper_key = self._harmonize_key(key)
             if key != proper_key:
-                value = self.get(key)
                 if self.get(proper_key) is None:
                     super().__setitem__(proper_key, value)
                 elif self.get(proper_key) != value:
