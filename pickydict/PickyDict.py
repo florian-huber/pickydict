@@ -182,8 +182,8 @@ class PickyDict(dict):
 
     def _apply_replacements(self):
         """Harmonizes all keys in dictionary."""
-        keys_initial = self.keys().copy()
-        for key in keys_initial:
+        keys_initial = self.keys()
+        for key in list(keys_initial).copy():
             value = self.get(key)
             if self._remove_empty_values:
                 if value == "":
