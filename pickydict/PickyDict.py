@@ -103,6 +103,7 @@ class PickyDict(dict):
             If set to True (default) the addition of empty entries ("") will be skipped 
             (if key doesn't exist yet) or will lead to removal of the respective key.
         """
+        # pylint: disable=too-many-arguments
         self._force_lower_case = force_lower_case
         self._remove_empty_values = remove_empty_values
         self._key_replacements = key_replacements
@@ -181,11 +182,12 @@ class PickyDict(dict):
 
     def _apply_replacements(self):
         """Harmonizes all keys in dictionary."""
-        keys_initial = self.keys()
-        for key in list(keys_initial).copy():
-            proper_key = self._harmonize_key(key)
+        for key, value in self.items():
+            if self._remove_empty_values and (value == ""):
+                self.pop(key.copy())
+                continue
+            proper_key = self._harmonize_key(key.copy())
             if key != proper_key:
-                value = self.get(key)
                 if self.get(proper_key) is None:
                     super().__setitem__(proper_key, value)
                 elif self.get(proper_key) != value:
