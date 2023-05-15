@@ -76,7 +76,7 @@ class PickyDict(dict):
 
     """
     _force_lower_case = True
-    _allow_empty_values = False
+    _remove_empty_values = True
     _key_replacements = None
     _key_regex_replacements = None
 
@@ -84,7 +84,7 @@ class PickyDict(dict):
                  key_replacements: dict = None,
                  key_regex_replacements: dict = None,
                  force_lower_case: bool = True,
-                 allow_empty_values: bool = False):
+                 remove_empty_values: bool = True):
         """
         Parameters
         ----------
@@ -99,11 +99,12 @@ class PickyDict(dict):
             An example would be {r"\\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
-        allow_empty_values : bool, optional
-            If set to False (default) the addition of empty entries ("") will be skipped 
+        remove_empty_values : bool, optional
+            If set to True (default) the addition of empty entries ("") will be skipped 
             (if key doesn't exist yet) or will lead to removal of the respective key.
         """
         self._force_lower_case = force_lower_case
+        self._remove_empty_values = remove_empty_values
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
         if input_dict is not None:
@@ -116,7 +117,9 @@ class PickyDict(dict):
         return PickyDict(self,
                          self._key_replacements,
                          self._key_regex_replacements,
-                         self._force_lower_case)
+                         self._force_lower_case,
+                         self._remove_empty_values
+                        )
 
     def __setitem__(self, key, value):
         proper_key = self._harmonize_key(key)
@@ -125,7 +128,7 @@ class PickyDict(dict):
                              "But this entry already exists. "
                              f"Please use '{proper_key}' if you want to replace the entry.")
 
-        if self._allow_empty_values and (value == ""):
+        if self._remove_empty_values and (value == ""):
             # overwriting a value with "" results in removal of the respective key
             if key == proper_key:
                 self.pop(key)
@@ -137,7 +140,7 @@ class PickyDict(dict):
     def set_pickyness(self, key_replacements: dict = None,
                       key_regex_replacements: dict = None,
                       force_lower_case: bool = True,
-                      allow_empty_values: bool = False,
+                      remove_empty_values: bool = False,
                      ):
         """
         Function to set the pickyness of the dictionary.
@@ -154,12 +157,12 @@ class PickyDict(dict):
             An example would be {r"\\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
-        allow_empty_values : bool, optional
-            If set to False (default) the addition of empty entries ("") will be skipped 
+        remove_empty_values : bool, optional
+            If set to True (default) the addition of empty entries ("") will be skipped 
             (if key doesn't exist yet) or will lead to removal of the respective key.
         """
         self._force_lower_case = force_lower_case
-        self._allow_empty_values = allow_empty_values
+        self._remove_empty_values = remove_empty_values
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
         self._apply_replacements()
