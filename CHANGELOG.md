@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2024-09-25
+
+### Changed
+
+- Skip the _apply_replacements() method call when an object is copied with .copy() [#14](https://github.com/florian-huber/pickydict/pull/14)
+- Updated CI workflow to newer Python versions.
+
+
 ## [0.4.0] - 2022-03-07
 
 ### Changed
@@ -52,7 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - This is the initial version of PickyDict
 
-[Unreleased]: https://github.com/florian-huber/pickydict/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/florian-huber/pickydict/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/florian-huber/pickydict/0.4.0...0.5.0
 [0.4.0]: https://github.com/florian-huber/pickydict/0.3.0...0.4.0
 [0.3.0]: https://github.com/florian-huber/pickydict/0.2.0...0.3.0
 [0.2.0]: https://github.com/florian-huber/pickydict/0.1.2...0.2.0
