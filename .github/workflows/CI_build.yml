@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.12
       - name: Python info
         run: |
           which python
@@ -47,10 +47,10 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         exclude:
           # already tested in first_check job
-          - python-version: 3.8
+          - python-version: 3.12
             os: ubuntu-latest
 
     steps:
