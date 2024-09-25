@@ -82,7 +82,9 @@ class PickyDict(dict):
     def __init__(self, input_dict: dict = None,
                  key_replacements: dict = None,
                  key_regex_replacements: dict = None,
-                 force_lower_case: bool = True):
+                 force_lower_case: bool = True,
+                 force_skip_replacements: bool = False,
+                ):
         """
         Parameters
         ----------
@@ -97,13 +99,18 @@ class PickyDict(dict):
             An example would be {r"\\s": "_"} which will replace all spaces with underscores.
         force_lower_case : bool, optional
             If set to True (default) all dictionary keys will be forced to be lower case.
+        foce_skip_replacements: bool, optional
+            If set to True this will force to skip the replacement methods. Will in most cases render
+            the logic of PickyDict useless (exceptions are for instance: copying already corrected dicts).
         """
+        # pylint: disable=too-many-arguments
         self._force_lower_case = force_lower_case
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
         if input_dict is not None:
             super().__init__(input_dict)
-            self._apply_replacements()
+            if not force_skip_replacements:
+                self._apply_replacements()
         else:
             super().__init__()     
 
@@ -111,7 +118,9 @@ class PickyDict(dict):
         return PickyDict(self,
                          self._key_replacements,
                          self._key_regex_replacements,
-                         self._force_lower_case)
+                         self._force_lower_case,
+                         force_skip_replacements=True
+                        )
 
     def __setitem__(self, key, value):
         proper_key = self._harmonize_key(key)
