@@ -103,6 +103,7 @@ class PickyDict(dict):
             If set to True this will force to skip the replacement methods. Will in most cases render
             the logic of PickyDict useless (exceptions are for instance: copying already corrected dicts).
         """
+        # pylint: disable=too-many-arguments
         self._force_lower_case = force_lower_case
         self._key_replacements = key_replacements
         self._key_regex_replacements = key_regex_replacements
