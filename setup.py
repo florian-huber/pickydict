@@ -27,7 +27,7 @@ setup(
     license="MIT",
     zip_safe=False,
     test_suite="tests",
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=[],
     extras_require={"dev": ["prospector[with_pyroma]",
                             "pytest",
